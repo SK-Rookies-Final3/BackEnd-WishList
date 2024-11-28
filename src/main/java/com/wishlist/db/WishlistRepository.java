@@ -1,5 +1,7 @@
 package com.wishlist.db;
 
-public class WishlistRepository extends JpaRepository<Wishlist, Long> {
-    Wishlist findByUserIdAndProductCode(Long userId, String productCode);
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface WishlistRepository extends JpaRepository<WishlistEntity, Long> {
+    WishlistEntity findByUserIdAndProductCode(Long userId, String productCode);
 }
