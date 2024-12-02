@@ -3,6 +3,7 @@ package com.wishlist.dto;
 public class Short {
     private String shortsCode;
     private String shortsThumbnail; // 숏츠 썸네일 URL
+    private String shortsUrl; // 숏츠 URL
 
     // getter, setter
     public String getShortsCode() {
@@ -19,5 +20,13 @@ public class Short {
 
     public void setShortsThumbnail(String shortsThumbnail) {
         this.shortsThumbnail = shortsThumbnail;
+    }
+
+    public String getShortsUrl() {
+        return shortsUrl;
+    }
+
+    public void setShortsUrl(String shortsUrl) {
+        this.shortsUrl = shortsUrl;
     }
 }
