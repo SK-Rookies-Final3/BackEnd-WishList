@@ -13,26 +13,28 @@ public class Wishlist {
     @Column(name = "user_id")
     private String userId;
 
-    @ElementCollection
-    private List<String> productCodes;  // 상품 코드 리스트
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "wishlist_id")
+    private List<ProductCode> productCodes;  // 상품 코드 리스트 (상품 코드와 썸네일 포함)
 
-    @ElementCollection
-    private List<String> shortsCodes;  // 숏츠 코드 리스트
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "wishlist_id")
+    private List<ShortsCode> shortsCodes;  // 숏츠 코드 리스트 (숏츠 코드, 썸네일, 링크 포함)
 
     // Getter and Setter
-    public List<String> getProductCodes() {
+    public List<ProductCode> getProductCodes() {
         return productCodes;
     }
 
-    public void setProductCodes(List<String> productCodes) {
+    public void setProductCodes(List<ProductCode> productCodes) {
         this.productCodes = productCodes;
     }
 
-    public List<String> getShortsCodes() {
+    public List<ShortsCode> getShortsCodes() {
         return shortsCodes;
     }
 
-    public void setShortsCodes(List<String> shortsCodes) {
+    public void setShortsCodes(List<ShortsCode> shortsCodes) {
         this.shortsCodes = shortsCodes;
     }
 }
