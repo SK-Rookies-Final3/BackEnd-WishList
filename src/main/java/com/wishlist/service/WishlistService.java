@@ -1,12 +1,8 @@
 package com.wishlist.service;
 
-import com.wishlist.db.Wishlist;
-import com.wishlist.db.WishlistRepository;
+import com.wishlist.db.*;
 import com.wishlist.dto.Product;
 import com.wishlist.dto.Short;
-import com.wishlist.dto.ProductRequest;
-import com.wishlist.dto.ShortsRequest;
-import com.wishlist.util.HeaderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,24 +10,30 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 @Service
 public class WishlistService {
 
     private final WishlistRepository wishlistRepository;
+    private final ProductCodeRepository productCodeRepository;
+    private final ShortsCodeRepository shortsCodeRepository;
     private final RestTemplate restTemplate;
-    private final String BRAND_SERVICE_URL = "/open-api/brand/product/";  // 브랜드 서비스 URL
+
+    private final String BRAND_SERVICE_URL = "http://localhost:8089/open-api/brand/product/";  // 브랜드 서비스 URL
     private final String SHORTS_SERVICE_URL = "http://shorts-service/api/shorts/";  // 숏츠 서비스 URL
 
     @Autowired
-    public WishlistService(WishlistRepository wishlistRepository, RestTemplate restTemplate) {
+    public WishlistService(WishlistRepository wishlistRepository, ProductCodeRepository productCodeRepository,
+                           ShortsCodeRepository shortsCodeRepository, RestTemplate restTemplate) {
         this.wishlistRepository = wishlistRepository;
+        this.productCodeRepository = productCodeRepository;
+        this.shortsCodeRepository = shortsCodeRepository;
         this.restTemplate = restTemplate;
     }
 
     // 사용자 Wishlist 조회
     private Wishlist getWishlist(HttpServletRequest request) {
-        String userId = HeaderUtils.getUserIdFromHeaders(request);
+        String userId = request.getHeader("user-id");
         return wishlistRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Wishlist not found for user: " + userId));
     }
@@ -52,9 +54,9 @@ public class WishlistService {
                 .orElseThrow(() -> new RuntimeException("Wishlist not found for user: " + userId));
 
         List<Product> products = new ArrayList<>();
-        for (String productCode : wishlist.getProductCodes()) { // 상품 코드 리스트로 접근
-            Product product = getProductInfo(productCode); // 상품 정보 조회
-            products.add(product); // 상품 목록에 추가
+        for (ProductCode productCode : wishlist.getProductCodes()) {
+            Product product = getProductInfo(productCode.getProductCode());
+            products.add(product);
         }
         return products;
     }
@@ -65,9 +67,9 @@ public class WishlistService {
                 .orElseThrow(() -> new RuntimeException("Wishlist not found for user: " + userId));
 
         List<Short> shorts = new ArrayList<>();
-        for (String shortsCode : wishlist.getShortsCodes()) { // 숏츠 코드 리스트로 접근
-            Short shortsInfo = getShortInfo(shortsCode); // 숏츠 정보 조회
-            shorts.add(shortsInfo); // 숏츠 목록에 추가
+        for (ShortsCode shortsCode : wishlist.getShortsCodes()) {
+            Short shortsInfo = getShortInfo(shortsCode.getShortsCode());
+            shorts.add(shortsInfo);
         }
         return shorts;
     }
@@ -78,8 +80,10 @@ public class WishlistService {
                 .orElseThrow(() -> new RuntimeException("Wishlist not found for user: " + userId));
 
         // 이미 Wishlist에 해당 상품이 있는지 확인
-        if (!wishlist.getProductCodes().contains(productCode)) {
-            wishlist.getProductCodes().add(productCode);
+        if (wishlist.getProductCodes().stream().noneMatch(p -> p.getProductCode().equals(productCode))) {
+            ProductCode productCodeObj = new ProductCode();
+            productCodeObj.setProductCode(productCode);
+            wishlist.getProductCodes().add(productCodeObj);
             wishlistRepository.save(wishlist);
             return "Product added to wishlist";
         } else {
@@ -93,8 +97,10 @@ public class WishlistService {
                 .orElseThrow(() -> new RuntimeException("Wishlist not found for user: " + userId));
 
         // 이미 Wishlist에 해당 숏츠가 있는지 확인
-        if (!wishlist.getShortsCodes().contains(shortsCode)) {
-            wishlist.getShortsCodes().add(shortsCode);
+        if (wishlist.getShortsCodes().stream().noneMatch(s -> s.getShortsCode().equals(shortsCode))) {
+            ShortsCode shortsCodeObj = new ShortsCode();
+            shortsCodeObj.setShortsCode(shortsCode);
+            wishlist.getShortsCodes().add(shortsCodeObj);
             wishlistRepository.save(wishlist);
             return "Short added to wishlist";
         } else {
@@ -107,7 +113,7 @@ public class WishlistService {
         Wishlist wishlist = wishlistRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Wishlist not found for user: " + userId));
 
-        if (wishlist.getProductCodes().remove(productCode)) {
+        if (wishlist.getProductCodes().removeIf(p -> p.getProductCode().equals(productCode))) {
             wishlistRepository.save(wishlist);
             return "Product removed from wishlist";
         } else {
@@ -120,7 +126,7 @@ public class WishlistService {
         Wishlist wishlist = wishlistRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Wishlist not found for user: " + userId));
 
-        if (wishlist.getShortsCodes().remove(shortsCode)) {
+        if (wishlist.getShortsCodes().removeIf(s -> s.getShortsCode().equals(shortsCode))) {
             wishlistRepository.save(wishlist);
             return "Short removed from wishlist";
         } else {
