@@ -7,9 +7,16 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class RestTemplateConfig {
-
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();  // RestTemplateBuilder를 이용해 RestTemplate 객체 생성
     }
+
+    // RestTemplateBuilder 빈 추가
+    @Bean
+    public RestTemplateBuilder restTemplateBuilder() {
+        return new RestTemplateBuilder();
+    }
 }
+
+
