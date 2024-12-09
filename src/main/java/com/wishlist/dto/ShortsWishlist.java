@@ -22,8 +22,8 @@ public class ShortsWishlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String userId;
-    private String shortsCode;
+    private int userId;
+    private int shortsCode;
     private String shortsThumbnail;
     private String shortsUrl;
 }

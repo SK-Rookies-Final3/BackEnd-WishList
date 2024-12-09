@@ -22,8 +22,8 @@ public class ProductWishlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String userId;
-    private String productCode;
+    private int userId;
+    private int productCode;
     private String productName;
     private String productImage;
 }
