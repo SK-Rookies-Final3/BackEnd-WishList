@@ -22,37 +22,37 @@ public class WishlistService {
     }
 
     // 상품 위시리스트 조회
-    public List<ProductWishlist> getProductWishlist(String userId) {
+    public List<ProductWishlist> getProductWishlist(int userId) {
         return productWishlistRepository.findByUserId(userId);
     }
 
     // 숏츠 위시리스트 조회
-    public List<ShortsWishlist> getShortsWishlist(String userId) {
+    public List<ShortsWishlist> getShortsWishlist(int userId) {
         return shortsWishlistRepository.findByUserId(userId);
     }
 
     // 상품 위시리스트에 항목 추가
-    public ProductWishlist addProductToWishlist(String userId, ProductWishlist productWishlist) {
+    public ProductWishlist addProductToWishlist(int userId, ProductWishlist productWishlist) {
         log.info("Adding productCode {} to wishlist for userId: {}", productWishlist.getProductCode(), userId);
         productWishlist.setUserId(userId);
         return productWishlistRepository.save(productWishlist);
     }
 
     // 숏츠 위시리스트에 항목 추가
-    public ShortsWishlist addShortsToWishlist(String userId, ShortsWishlist shortsWishlist) {
+    public ShortsWishlist addShortsToWishlist(int userId, ShortsWishlist shortsWishlist) {
         log.info("Adding shortsCode {} to wishlist for userId: {}", shortsWishlist.getShortsCode(), userId);
         shortsWishlist.setUserId(userId);
         return shortsWishlistRepository.save(shortsWishlist);
     }
 
     // 상품 위시리스트에서 항목 삭제
-    public void removeProductFromWishlist(String userId, Long id) {
+    public void removeProductFromWishlist(int userId, Long id) {
         log.info("Removing productCode {} from wishlist for userId: {}", id, userId);
         productWishlistRepository.deleteById(id);
     }
 
     // 숏츠 위시리스트에서 항목 삭제
-    public void removeShortsFromWishlist(String userId, Long id) {
+    public void removeShortsFromWishlist(int userId, Long id) {
         log.info("Removing shortsCode {} from wishlist for userId: {}", id, userId);
         shortsWishlistRepository.deleteById(id);
     }

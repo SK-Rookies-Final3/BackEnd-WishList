@@ -22,7 +22,7 @@ public class WishlistController {
 
     // 상품 위시리스트 조회
     @GetMapping("/products")
-    public ResponseEntity<List<ProductWishlist>> getProductWishlist(@RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<List<ProductWishlist>> getProductWishlist(@RequestHeader("X-User-Id") int userId) {
         log.info("Fetching product wishlist for userId: {}", userId);
         List<ProductWishlist> productWishlist = wishlistService.getProductWishlist(userId);
         return ResponseEntity.ok(productWishlist);
@@ -30,7 +30,7 @@ public class WishlistController {
 
     // 숏츠 위시리스트 조회
     @GetMapping("/shorts")
-    public ResponseEntity<List<ShortsWishlist>> getShortsWishlist(@RequestHeader("X-User-Id") String userId) {
+    public ResponseEntity<List<ShortsWishlist>> getShortsWishlist(@RequestHeader("X-User-Id") int userId) {
         log.info("Fetching shorts wishlist for userId: {}", userId);
         List<ShortsWishlist> shortsWishlist = wishlistService.getShortsWishlist(userId);
         return ResponseEntity.ok(shortsWishlist);
@@ -38,7 +38,7 @@ public class WishlistController {
 
     // 상품 위시리스트에 항목 추가하기
     @PostMapping("/products")
-    public ResponseEntity<ProductWishlist> addProductToWishlist(@RequestHeader("X-User-Id") String userId, @RequestBody ProductWishlist productWishlist) {
+    public ResponseEntity<ProductWishlist> addProductToWishlist(@RequestHeader("X-User-Id") int userId, @RequestBody ProductWishlist productWishlist) {
         log.info("Adding product to wishlist for userId: {}", userId);
         ProductWishlist addedProduct = wishlistService.addProductToWishlist(userId, productWishlist);
         return ResponseEntity.status(201).body(addedProduct);
@@ -46,7 +46,7 @@ public class WishlistController {
 
     // 숏츠 위시리스트에 항목 추가하기
     @PostMapping("/shorts")
-    public ResponseEntity<ShortsWishlist> addShortsToWishlist(@RequestHeader("X-User-Id") String userId, @RequestBody ShortsWishlist shortsWishlist) {
+    public ResponseEntity<ShortsWishlist> addShortsToWishlist(@RequestHeader("X-User-Id") int userId, @RequestBody ShortsWishlist shortsWishlist) {
         log.info("Adding shorts to wishlist for userId: {}", userId);
         ShortsWishlist addedShorts = wishlistService.addShortsToWishlist(userId, shortsWishlist);
         return ResponseEntity.status(201).body(addedShorts);
@@ -54,7 +54,7 @@ public class WishlistController {
 
     // 상품 위시리스트에서 항목 삭제하기
     @DeleteMapping("/products/{id}")
-    public ResponseEntity<Void> removeProductFromWishlist(@RequestHeader("X-User-Id") String userId, @PathVariable Long id) {
+    public ResponseEntity<Void> removeProductFromWishlist(@RequestHeader("X-User-Id") int userId, @PathVariable Long id) {
         log.info("Removing product from wishlist for userId: {}", userId);
         wishlistService.removeProductFromWishlist(userId, id);
         return ResponseEntity.noContent().build();
@@ -62,7 +62,7 @@ public class WishlistController {
 
     // 숏츠 위시리스트에서 항목 삭제하기
     @DeleteMapping("/shorts/{id}")
-    public ResponseEntity<Void> removeShortsFromWishlist(@RequestHeader("X-User-Id") String userId, @PathVariable Long id) {
+    public ResponseEntity<Void> removeShortsFromWishlist(@RequestHeader("X-User-Id") int userId, @PathVariable Long id) {
         log.info("Removing shorts from wishlist for userId: {}", userId);
         wishlistService.removeShortsFromWishlist(userId, id);
         return ResponseEntity.noContent().build();
